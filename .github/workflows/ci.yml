@@ -5,11 +5,15 @@ on:
   pull_request:
     branches: [main]
 jobs:
-  placeholder:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Scaffold guard
-        run: |
-          test -f README.md
-          echo "Node CI will replace this job when scaffold lands (ADR-0004)."
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
