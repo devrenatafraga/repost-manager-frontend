@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --noEmit",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "gen:api": "bash scripts/gen-api.sh",
+    "gen:api:check": "bash scripts/check-api-drift.sh"
   },
   "dependencies": {
     "react": "^19.1.0",
@@ -23,6 +25,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
+    "openapi-typescript": "^7.8.0",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.35.1",
     "vite": "^7.0.4"
