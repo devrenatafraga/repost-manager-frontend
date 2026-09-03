@@ -19,6 +19,20 @@ Scripts:
 - `npm run build` — typecheck + build de produção
 - `npm run typecheck` — verificação TypeScript
 - `npm run lint` — ESLint
+- `npm run gen:api` — baixa `/openapi.json` do backend e regenera `src/api/schema.d.ts`
+- `npm run gen:api:check` — regenera tipos a partir do snapshot commitado e falha se houver drift
+
+## Contrato OpenAPI (ADR-0003)
+
+Snapshot em [`openapi/openapi.json`](openapi/openapi.json). Tipos gerados em [`src/api/schema.d.ts`](src/api/schema.d.ts).
+
+Com o backend rodando:
+
+```bash
+OPENAPI_URL=http://localhost:8080/openapi.json npm run gen:api
+```
+
+A CI executa `gen:api:check` para impedir dessincronia entre snapshot e tipos.
 
 ## Licença
 
