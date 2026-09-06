@@ -10,6 +10,7 @@ Requisitos: Node.js 22+
 
 ```bash
 npm install
+cp .env.example .env
 npm run dev
 ```
 
@@ -33,6 +34,13 @@ OPENAPI_URL=http://localhost:8080/openapi.json npm run gen:api
 ```
 
 A CI executa `gen:api:check` para impedir dessincronia entre snapshot e tipos.
+
+## Auth (ADR-0006)
+
+- Access JWT fica **só em memória** (nunca em `localStorage`).
+- Refresh usa cookie httpOnly com `credentials: 'include'`.
+- Sem sessão válida, rotas protegidas redirecionam para `/login`.
+- Configure `VITE_API_BASE_URL` (ver `.env.example`) apontando para o backend.
 
 ## Licença
 
