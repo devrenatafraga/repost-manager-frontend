@@ -37,12 +37,70 @@
         }
       }
     },
+    "/api/v1/admin/auth/login": {
+      "post": {
+        "tags": ["admin"],
+        "summary": "Admin login",
+        "description": "Authenticates with email/password. Returns access JWT; sets refresh cookie.",
+        "operationId": "adminLogin",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authenticated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TokenResponse" }
+              }
+            }
+          },
+          "401": { "description": "Invalid credentials" },
+          "429": { "description": "Rate limited" }
+        }
+      }
+    },
+    "/api/v1/admin/auth/refresh": {
+      "post": {
+        "tags": ["admin"],
+        "summary": "Refresh access token",
+        "operationId": "adminRefresh",
+        "responses": {
+          "200": {
+            "description": "New access token",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TokenResponse" }
+              }
+            }
+          },
+          "401": { "description": "Missing or invalid refresh cookie" },
+          "429": { "description": "Rate limited" }
+        }
+      }
+    },
+    "/api/v1/admin/auth/logout": {
+      "post": {
+        "tags": ["admin"],
+        "summary": "Admin logout",
+        "operationId": "adminLogout",
+        "responses": {
+          "204": { "description": "Logged out" }
+        }
+      }
+    },
     "/api/v1/admin/": {
       "get": {
         "tags": ["admin"],
         "summary": "Admin API surface",
         "description": "Stub endpoint for the authenticated admin surface.",
         "operationId": "getAdminSurface",
+        "security": [{ "bearerAuth": [] }],
         "responses": {
           "200": {
             "description": "Surface metadata",
@@ -55,7 +113,8 @@
                 }
               }
             }
-          }
+          },
+          "401": { "description": "Missing or invalid Bearer JWT" }
         }
       }
     },
@@ -78,6 +137,34 @@
               }
             }
           }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string", "format": "password" }
+        }
+      },
+      "TokenResponse": {
+        "type": "object",
+        "required": ["accessToken", "tokenType", "expiresIn"],
+        "properties": {
+          "accessToken": { "type": "string" },
+          "tokenType": { "type": "string", "default": "Bearer" },
+          "expiresIn": { "type": "integer", "format": "int64" }
         }
       }
     }
