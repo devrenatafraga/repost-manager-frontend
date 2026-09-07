@@ -1,5 +1,6 @@
 import type { components } from "./schema";
 
+export type { components };
 export type LoginRequest = components["schemas"]["LoginRequest"];
 export type TokenResponse = components["schemas"]["TokenResponse"];
 

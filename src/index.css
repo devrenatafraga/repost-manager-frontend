@@ -15,6 +15,10 @@ body {
   padding: 0 1rem;
 }
 
+.app.wide {
+  max-width: 44rem;
+}
+
 .app.login {
   max-width: 22rem;
 }
@@ -29,27 +33,49 @@ body {
   font-size: 0.95rem;
 }
 
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 0.5rem;
+.meta {
+  margin: 0.2rem 0 0;
 }
 
-.topbar h1 {
-  margin: 0;
+.topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.brand-block h1 {
+  margin: 0.15rem 0 0;
   font-size: 1.5rem;
 }
 
-.login-form {
+.brand-link {
+  color: #111;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.topbar-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.login-form,
+.post-form {
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
 }
 
-.login-form label {
+.login-form label,
+.post-form label {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
@@ -57,7 +83,10 @@ body {
   font-weight: 600;
 }
 
-.login-form input {
+.login-form input,
+.post-form input,
+.post-form textarea,
+.post-form select {
   font: inherit;
   font-weight: 400;
   padding: 0.55rem 0.65rem;
@@ -66,12 +95,23 @@ body {
   background: #fff;
 }
 
-.login-form input:focus {
+.post-form textarea.md-editor {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.login-form input:focus,
+.post-form input:focus,
+.post-form textarea:focus,
+.post-form select:focus {
   outline: 2px solid #111;
   outline-offset: 1px;
 }
 
-button {
+button,
+.button-link {
   font: inherit;
   padding: 0.55rem 0.9rem;
   border: 1px solid #111;
@@ -79,6 +119,8 @@ button {
   background: #111;
   color: #fff;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
 }
 
 button:disabled {
@@ -86,15 +128,82 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.topbar button {
+button.ghost,
+.ghost-link {
   background: transparent;
   color: #111;
+  border-color: #ccc;
+}
+
+button.ghost.danger {
+  color: #a40000;
+  border-color: #e0b4b4;
 }
 
 .form-error {
   margin: 0;
   color: #a40000;
   font-size: 0.9rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.post-list {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.post-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.post-title {
+  color: #111;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.post-title:hover {
+  text-decoration: underline;
+}
+
+.row-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.row-actions a {
+  color: #111;
+}
+
+.status {
+  font-size: 0.85rem;
+}
+
+.status-draft {
+  color: #666;
+}
+
+.status-scheduled {
+  color: #8a5a00;
+}
+
+.status-published {
+  color: #0a6b2d;
 }
 
 code {

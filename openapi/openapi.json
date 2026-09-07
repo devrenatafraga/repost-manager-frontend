@@ -94,6 +94,143 @@
         }
       }
     },
+    "/api/v1/admin/posts": {
+      "get": {
+        "tags": ["admin"],
+        "summary": "List admin posts",
+        "operationId": "listAdminPosts",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "enum": ["draft", "scheduled", "published"] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Posts for the default blog",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PostListResponse" }
+              }
+            }
+          },
+          "401": { "description": "Missing or invalid Bearer JWT" }
+        }
+      },
+      "post": {
+        "tags": ["admin"],
+        "summary": "Create post",
+        "operationId": "createAdminPost",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpsertPostRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PostResponse" }
+              }
+            }
+          },
+          "400": { "description": "Validation error" },
+          "401": { "description": "Missing or invalid Bearer JWT" },
+          "409": { "description": "Slug already exists" }
+        }
+      }
+    },
+    "/api/v1/admin/posts/{id}": {
+      "get": {
+        "tags": ["admin"],
+        "summary": "Get post by id",
+        "operationId": "getAdminPost",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PostResponse" }
+              }
+            }
+          },
+          "401": { "description": "Missing or invalid Bearer JWT" },
+          "404": { "description": "Not found" }
+        }
+      },
+      "put": {
+        "tags": ["admin"],
+        "summary": "Update post",
+        "operationId": "updateAdminPost",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpsertPostRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PostResponse" }
+              }
+            }
+          },
+          "400": { "description": "Validation error" },
+          "401": { "description": "Missing or invalid Bearer JWT" },
+          "404": { "description": "Not found" },
+          "409": { "description": "Slug already exists" }
+        }
+      },
+      "delete": {
+        "tags": ["admin"],
+        "summary": "Delete post",
+        "operationId": "deleteAdminPost",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Deleted" },
+          "401": { "description": "Missing or invalid Bearer JWT" },
+          "404": { "description": "Not found" }
+        }
+      }
+    },
     "/api/v1/admin/": {
       "get": {
         "tags": ["admin"],
@@ -115,6 +252,49 @@
             }
           },
           "401": { "description": "Missing or invalid Bearer JWT" }
+        }
+      }
+    },
+    "/api/v1/public/posts": {
+      "get": {
+        "tags": ["public"],
+        "summary": "List published posts",
+        "operationId": "listPublicPosts",
+        "responses": {
+          "200": {
+            "description": "Published posts",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PublicPostListResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/public/posts/{slug}": {
+      "get": {
+        "tags": ["public"],
+        "summary": "Get published post by slug",
+        "operationId": "getPublicPostBySlug",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Published post",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PublicPostResponse" }
+              }
+            }
+          },
+          "404": { "description": "Missing or not published" }
         }
       }
     },
@@ -165,6 +345,84 @@
           "accessToken": { "type": "string" },
           "tokenType": { "type": "string", "default": "Bearer" },
           "expiresIn": { "type": "integer", "format": "int64" }
+        }
+      },
+      "PostResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "blogId",
+          "slug",
+          "title",
+          "contentMd",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "blogId": { "type": "string", "format": "uuid" },
+          "slug": { "type": "string" },
+          "title": { "type": "string" },
+          "excerpt": { "type": "string", "nullable": true },
+          "contentMd": { "type": "string" },
+          "coverMediaId": { "type": "string", "format": "uuid", "nullable": true },
+          "status": { "type": "string", "enum": ["draft", "scheduled", "published"] },
+          "publishedAt": { "type": "string", "nullable": true },
+          "readingTime": { "type": "integer", "nullable": true },
+          "createdAt": { "type": "string" },
+          "updatedAt": { "type": "string" }
+        }
+      },
+      "UpsertPostRequest": {
+        "type": "object",
+        "required": ["slug", "title"],
+        "properties": {
+          "slug": { "type": "string" },
+          "title": { "type": "string" },
+          "excerpt": { "type": "string", "nullable": true },
+          "contentMd": { "type": "string", "default": "" },
+          "status": {
+            "type": "string",
+            "enum": ["draft", "scheduled", "published"],
+            "default": "draft"
+          },
+          "publishedAt": { "type": "string", "nullable": true }
+        }
+      },
+      "PostListResponse": {
+        "type": "object",
+        "required": ["items"],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PostResponse" }
+          }
+        }
+      },
+      "PublicPostResponse": {
+        "type": "object",
+        "required": ["id", "slug", "title", "contentMd", "updatedAt"],
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "slug": { "type": "string" },
+          "title": { "type": "string" },
+          "excerpt": { "type": "string", "nullable": true },
+          "contentMd": { "type": "string" },
+          "coverMediaId": { "type": "string", "format": "uuid", "nullable": true },
+          "publishedAt": { "type": "string", "nullable": true },
+          "readingTime": { "type": "integer", "nullable": true },
+          "updatedAt": { "type": "string" }
+        }
+      },
+      "PublicPostListResponse": {
+        "type": "object",
+        "required": ["items"],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PublicPostResponse" }
+          }
         }
       }
     }

@@ -41,6 +41,7 @@ A CI executa `gen:api:check` para impedir dessincronia entre snapshot e tipos.
 - Refresh usa cookie httpOnly com `credentials: 'include'`.
 - Sem sessão válida, rotas protegidas redirecionam para `/login`.
 - Configure `VITE_API_BASE_URL` (ver `.env.example`) apontando para o backend.
+- Posts: lista em `/`, editor em `/posts/new` e `/posts/:id`.
 
 ## Licença
 

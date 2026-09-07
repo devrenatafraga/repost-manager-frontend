@@ -75,6 +75,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List admin posts */
+        get: operations["listAdminPosts"];
+        put?: never;
+        /** Create post */
+        post: operations["createAdminPost"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/posts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get post by id */
+        get: operations["getAdminPost"];
+        /** Update post */
+        put: operations["updateAdminPost"];
+        post?: never;
+        /** Delete post */
+        delete: operations["deleteAdminPost"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/": {
         parameters: {
             query?: never;
@@ -87,6 +124,40 @@ export interface paths {
          * @description Stub endpoint for the authenticated admin surface.
          */
         get: operations["getAdminSurface"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/public/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List published posts */
+        get: operations["listPublicPosts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/public/posts/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get published post by slug */
+        get: operations["getPublicPostBySlug"];
         put?: never;
         post?: never;
         delete?: never;
@@ -131,6 +202,56 @@ export interface components {
             tokenType: string;
             /** Format: int64 */
             expiresIn: number;
+        };
+        PostResponse: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            blogId: string;
+            slug: string;
+            title: string;
+            excerpt?: string | null;
+            contentMd: string;
+            /** Format: uuid */
+            coverMediaId?: string | null;
+            /** @enum {string} */
+            status: "draft" | "scheduled" | "published";
+            publishedAt?: string | null;
+            readingTime?: number | null;
+            createdAt: string;
+            updatedAt: string;
+        };
+        UpsertPostRequest: {
+            slug: string;
+            title: string;
+            excerpt?: string | null;
+            /** @default  */
+            contentMd: string;
+            /**
+             * @default draft
+             * @enum {string}
+             */
+            status: "draft" | "scheduled" | "published";
+            publishedAt?: string | null;
+        };
+        PostListResponse: {
+            items: components["schemas"]["PostResponse"][];
+        };
+        PublicPostResponse: {
+            /** Format: uuid */
+            id: string;
+            slug: string;
+            title: string;
+            excerpt?: string | null;
+            contentMd: string;
+            /** Format: uuid */
+            coverMediaId?: string | null;
+            publishedAt?: string | null;
+            readingTime?: number | null;
+            updatedAt: string;
+        };
+        PublicPostListResponse: {
+            items: components["schemas"]["PublicPostResponse"][];
         };
     };
     responses: never;
@@ -253,6 +374,204 @@ export interface operations {
             };
         };
     };
+    listAdminPosts: {
+        parameters: {
+            query?: {
+                status?: "draft" | "scheduled" | "published";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Posts for the default blog */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostListResponse"];
+                };
+            };
+            /** @description Missing or invalid Bearer JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    createAdminPost: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpsertPostRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostResponse"];
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Missing or invalid Bearer JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Slug already exists */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getAdminPost: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Post */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostResponse"];
+                };
+            };
+            /** @description Missing or invalid Bearer JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    updateAdminPost: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpsertPostRequest"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostResponse"];
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Missing or invalid Bearer JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Slug already exists */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    deleteAdminPost: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Missing or invalid Bearer JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     getAdminSurface: {
         parameters: {
             query?: never;
@@ -275,6 +594,55 @@ export interface operations {
             };
             /** @description Missing or invalid Bearer JWT */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listPublicPosts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Published posts */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicPostListResponse"];
+                };
+            };
+        };
+    };
+    getPublicPostBySlug: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Published post */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicPostResponse"];
+                };
+            };
+            /** @description Missing or not published */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
