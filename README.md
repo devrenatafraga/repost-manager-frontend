@@ -43,6 +43,14 @@ A CI executa `gen:api:check` para impedir dessincronia entre snapshot e tipos.
 - Configure `VITE_API_BASE_URL` (ver `.env.example`) apontando para o backend.
 - Posts: lista em `/`, editor em `/posts/new` e `/posts/:id`.
 
+## Deploy (Vercel)
+
+Projeto Hobby ligado a este repositório, branch `main`, framework **Vite**. Root directory vazio. Build `npm run build`, output `dist`.
+
+Defina `VITE_API_BASE_URL` **antes** do build (o Vite embute o valor). Ex.: `https://repost-manager-backend.onrender.com`.
+
+O [`vercel.json`](vercel.json) devolve `index.html` nas rotas do React (`/login`, `/posts/new`). No backend, `CORS_ORIGINS` precisa ser a origem `https://….vercel.app` deste projeto.
+
 ## Licença
 
 MIT
